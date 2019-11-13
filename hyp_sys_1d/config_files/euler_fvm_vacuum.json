@@ -1,0 +1,19 @@
+{
+  "model": "euler",
+
+  "initial_conditions": "vacuum",
+  "output_dir": "../output/fvm/vacuum",
+  "output_file": "euler_o1_hllc",
+  
+  "boundary_condition": "outflow",
+  "reconstruction": "o1",
+  "reconstruction_variable": "primitive",
+  "time_integrator": "forward_euler",
+  "flux": "hllc",
+
+  "n_interior_cells": 128,
+  "n_ghost": 2,
+
+  "t_end": 0.005,
+  "cfl_number": 0.3
+}

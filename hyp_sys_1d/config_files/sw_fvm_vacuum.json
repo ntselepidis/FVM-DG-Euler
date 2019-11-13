@@ -1,0 +1,19 @@
+{
+  "model": "shallow_water",
+
+  "initial_conditions": "vacuum",
+  "output_dir": "../output/fvm/vacuum",
+  "output_file": "sw_o1_hll",
+  
+  "boundary_condition": "outflow",
+  "reconstruction": "o1",
+  "reconstruction_variable": "primitive",
+  "time_integrator": "forward_euler",
+  "flux": "hll",
+
+  "n_interior_cells": 128,
+  "n_ghost": 2,
+
+  "t_end": 0.03,
+  "cfl_number": 0.3
+}

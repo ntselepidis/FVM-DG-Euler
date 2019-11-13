@@ -1,0 +1,20 @@
+{
+  "model": "burgers",
+
+  "initial_conditions": "rarefaction",
+  "output_dir": "../output",
+  "output_file": "burgers_dg2_rarefaction-",
+  
+  "boundary_condition": "outflow",
+  "degree": 2,
+  "dg_limiter": "shu",
+  "dg_limiter_variable": "primitive",
+  "time_integrator": "forward_euler",
+  "flux": "rusanov",
+  
+  "n_interior_cells": 128,
+  "n_ghost": 2,
+
+  "t_end": 0.2,
+  "cfl_number": 0.1
+}

@@ -1,0 +1,20 @@
+{
+  "model": "burgers",
+
+  "initial_conditions": "shock",
+  "output_dir": "../output",
+  "output_file": "burgers_dg1_shock-",
+  
+  "boundary_condition": "outflow",
+  "degree": 1,
+  "dg_limiter": "vanleer",
+  "dg_limiter_variable": "primitive",
+  "time_integrator": "forward_euler",
+  "flux": "rusanov",
+  
+  "n_interior_cells": 4,
+  "n_ghost": 2,
+
+  "t_end": 0.5,
+  "cfl_number": 0.45
+}

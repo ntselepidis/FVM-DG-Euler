@@ -1,0 +1,13 @@
+BasedOnStyle: LLVM
+
+IndentWidth : 4
+ColumnLimit : 80
+
+AlwaysBreakTemplateDeclarations : true
+BinPackArguments : false
+BinPackParameters : false
+BreakBeforeBinaryOperators : All
+
+ConstructorInitializerAllOnOneLineOrOnePerLine : true
+
+FixNamespaceComments : false

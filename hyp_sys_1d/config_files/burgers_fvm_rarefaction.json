@@ -1,0 +1,19 @@
+{
+  "model": "burgers",
+
+  "initial_conditions": "rarefaction",
+  "output_dir": "../output",
+  "output_file": "burgers_fvm1_rarefaction-",
+  
+  "boundary_condition": "outflow",
+  "reconstruction": "minmod",
+  "reconstruction_variable": "primitive",
+  "time_integrator": "ssp2",
+  "flux": "rusanov",
+  
+  "n_interior_cells": 128,
+  "n_ghost": 2,
+
+  "t_end": 0.3,
+  "cfl_number": 0.3
+}

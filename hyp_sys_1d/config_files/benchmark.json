@@ -1,0 +1,19 @@
+{
+  "model": "euler",
+
+  "initial_conditions": "sod_shock_tube",
+  "output_dir": "../output/fvm/sod_shock_tube",
+  "output_file": "euler_hllc_minmod_prim",
+  
+  "boundary_condition": "outflow",
+  "reconstruction": "minmod",
+  "reconstruction_variable": "primitive",
+  "time_integrator": "ssp2",
+  "flux": "hllc",
+
+  "n_interior_cells": 1024,
+  "n_ghost": 2,
+
+  "t_end": 0.2,
+  "cfl_number": 0.3
+}
