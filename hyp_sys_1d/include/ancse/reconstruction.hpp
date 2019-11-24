@@ -49,5 +49,45 @@ private:
   mutable Eigen::MatrixXd up;
 };
 
+template <class SlopeLimiter>
+class PWLinearReconstruction {
+  public:
+    explicit PWLinearReconstruction(const SlopeLimiter &slope_limiter)
+        : slope_limiter(slope_limiter) {}
+
+    void set(const Eigen::MatrixXd &u) const {
+        up.resize(u.rows(),u.cols());
+        up = u;
+    }
+
+    std::pair<Eigen::VectorXd, Eigen::VectorXd> 
+    operator()(int i) const {
+        return (*this)(up.col(i-1), up.col(i), up.col(i+1), up.col(i+2));
+    }
+
+    std::pair<Eigen::VectorXd, Eigen::VectorXd>
+    operator()(Eigen::VectorXd &ua, 
+               Eigen::VectorXd &ub, 
+               Eigen::VectorXd &uc, 
+               Eigen::VectorXd &ud) const {
+
+        Eigen::VectorXd sL = ub - ua;
+        Eigen::VectorXd sM = uc - ub;
+        Eigen::VectorXd sR = ud - uc;
+        Eigen::VectorXd uL(3);
+        Eigen::VectorXd uR(3);
+
+        for (int i=0; i<3; i++) {
+            uL(i) = ub(i) + 0.5 * slope_limiter(sL(i), sM(i));
+            uR(i) = uc(i) - 0.5 * slope_limiter(sM(i), sR(i));            
+        }
+
+        return {std::move(uL), std::move(uR)};
+    }
+
+  private:
+    SlopeLimiter slope_limiter;
+    mutable Eigen::MatrixXd up;
+};
 
 #endif // HYPSYS1D_RATE_OF_CHANGE_HPP

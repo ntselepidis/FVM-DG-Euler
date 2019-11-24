@@ -19,6 +19,26 @@ inline double minmod(double a, double b, double c) {
 }
 
 /// FVM slope limiters
+struct MinMod {
+    inline double operator()(double sL, double sR) const {
+        return minmod(sL, sR);
+    }
+};
+
+struct SuperBee {
+    inline double operator()(double sL, double sR) const {
+        double A = minmod(2.0 * sL, sR);
+        double B = minmod(sL, 2.0 * sR);
+
+        return maxmod(A, B);
+    }
+};
+
+struct MonotonizedCentral {
+    inline double operator()(double sL, double sR) const {
+        return minmod(2.0 * sL, 0.5 * (sL + sR), 2.0 * sR);
+    }
+};
 
 /// DG limiters
 struct VanLeer {
