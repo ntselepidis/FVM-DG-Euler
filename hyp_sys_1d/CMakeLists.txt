@@ -20,6 +20,7 @@ target_link_libraries(hyp_sys_obj PUBLIC FMT)
 target_link_libraries(hyp_sys_obj PUBLIC JSON)
 target_link_libraries(hyp_sys_obj PRIVATE warning_flags)
 target_compile_definitions(hyp_sys_obj PUBLIC -D_USE_MATH_DEFINES)
+target_link_libraries(hyp_sys_obj PRIVATE -lstdc++fs)
 
 if(CLANG_TIDY_EXE)
   set_target_properties(hyp_sys_obj PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
