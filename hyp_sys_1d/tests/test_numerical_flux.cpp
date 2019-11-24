@@ -26,7 +26,28 @@ TEST(TestCentralFlux, consistency) {
     check_consistency_euler(central_flux);
 }
 
+TEST(TestRusanovFlux, consistency) {
+    std::shared_ptr<Model> model = std::make_shared<Euler>();
+    auto rusanov_flux = Rusanov(model);
 
+    check_consistency_euler(rusanov_flux);
+}
+
+TEST(TestLaxFriedrichsFlux, consistency) {
+    auto grid = Grid({0.0, 1.0}, 14, 2);
+    auto model = std::make_shared<Euler>();
+    auto simt = std::make_shared<SimulationTime>(0.0, 0.1, 0.2, 0);
+    auto LxF_flux = LaxFriedrichs(grid, model, simt);
+
+    check_consistency_euler(LxF_flux);
+}
+
+TEST(TestRoeFlux, consistency) {
+    std::shared_ptr<Model> model = std::make_shared<Euler>();
+    auto roe_flux = Roe(model);
+
+    check_consistency_euler(roe_flux);
+}
 
 
 
