@@ -49,6 +49,16 @@ TEST(TestRoeFlux, consistency) {
     check_consistency_euler(roe_flux);
 }
 
+TEST(TestHLLFlux, consistency) {
+    std::shared_ptr<Model> model = std::make_shared<Euler>();
+    auto hll_flux = HLL(model);
 
+    check_consistency_euler(hll_flux);
+}
 
+TEST(TestHLLCFlux, consistency) {
+    std::shared_ptr<Model> model = std::make_shared<Euler>();
+    auto hllc_flux = HLLC(model);
 
+    check_consistency_euler(hllc_flux);
+}
