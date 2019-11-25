@@ -66,10 +66,10 @@ class PWLinearReconstruction {
     }
 
     std::pair<Eigen::VectorXd, Eigen::VectorXd>
-    operator()(Eigen::VectorXd &ua, 
-               Eigen::VectorXd &ub, 
-               Eigen::VectorXd &uc, 
-               Eigen::VectorXd &ud) const {
+    operator()(Eigen::VectorXd ua, 
+               Eigen::VectorXd ub, 
+               Eigen::VectorXd uc, 
+               Eigen::VectorXd ud) const {
 
         Eigen::VectorXd sL = ub - ua;
         Eigen::VectorXd sM = uc - ub;

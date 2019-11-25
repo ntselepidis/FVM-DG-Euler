@@ -45,8 +45,9 @@ std::shared_ptr<RateOfChange> make_fvm_rate_of_change(
     const std::shared_ptr<SimulationTime> &simulation_time)
 {
     REGISTER_RECONSTRUCTION("o1", PWConstantReconstruction{})
-
-    // Register piecewise linear reconstructions.
+    REGISTER_RECONSTRUCTION("minmod", PWLinearReconstruction{MinMod{}})
+    REGISTER_RECONSTRUCTION("super_bee", PWLinearReconstruction{SuperBee{}})
+    REGISTER_RECONSTRUCTION("monotonized_central", PWLinearReconstruction{MonotonizedCentral{}})
 
     throw std::runtime_error(fmt::format(
         "Unknown reconstruction. [{}]", std::string(config["reconstruction"])));
