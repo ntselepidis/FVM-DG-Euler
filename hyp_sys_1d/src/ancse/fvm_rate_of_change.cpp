@@ -20,8 +20,12 @@ deduce_numerical_flux(const nlohmann::json &config,
                       const Reconstruction &reconstruction)
 {
     REGISTER_NUMERICAL_FLUX("central_flux", CentralFlux, CentralFlux(model))
-
-    // Register the other numerical fluxes.
+    REGISTER_NUMERICAL_FLUX("rusanov", Rusanov, Rusanov(model))
+    REGISTER_NUMERICAL_FLUX("lax_friedrichs", 
+        LaxFriedrichs, LaxFriedrichs(grid, model, simulation_time))
+    REGISTER_NUMERICAL_FLUX("roe", Roe, Roe(model))
+    REGISTER_NUMERICAL_FLUX("hll", HLL, HLL(model))
+    REGISTER_NUMERICAL_FLUX("hllc", HLLC, HLLC(model))
 
     throw std::runtime_error(
         fmt::format("Unknown numerical flux. {}", std::string(config["flux"])));
