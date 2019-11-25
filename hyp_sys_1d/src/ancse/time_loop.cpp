@@ -20,7 +20,7 @@ void TimeLoop :: operator()(Eigen::MatrixXd u0) const
             simulation_time->dt = simulation_time->t_end - simulation_time->t;
         }
 
-        //write_snapshot(u1);
+        write_snapshot(u1);
 
         u0.swap(u1);
 
