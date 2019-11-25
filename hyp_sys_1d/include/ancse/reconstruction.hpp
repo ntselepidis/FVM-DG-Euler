@@ -71,13 +71,14 @@ class PWLinearReconstruction {
                Eigen::VectorXd uc, 
                Eigen::VectorXd ud) const {
 
+        const int n_vars = ua.rows();
         Eigen::VectorXd sL = ub - ua;
         Eigen::VectorXd sM = uc - ub;
         Eigen::VectorXd sR = ud - uc;
-        Eigen::VectorXd uL(3);
-        Eigen::VectorXd uR(3);
+        Eigen::VectorXd uL(n_vars);
+        Eigen::VectorXd uR(n_vars);
 
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<n_vars; i++) {
             uL(i) = ub(i) + 0.5 * slope_limiter(sL(i), sM(i));
             uR(i) = uc(i) - 0.5 * slope_limiter(sM(i), sR(i));            
         }
