@@ -35,8 +35,9 @@ class FVMRateOfChange : public RateOfChange {
       auto n_cells = grid.n_cells;
       auto n_ghost = grid.n_ghost;
       auto dx = grid.dx;
-      Eigen::VectorXd fL(3), fR(3), uL, uR;
-      fR << 0.0, 0.0, 0.0;
+      auto n_vars = model->get_nvars();
+      Eigen::VectorXd fL, fR = Eigen::VectorXd::Zero(n_vars);
+      Eigen::VectorXd uL, uR;
 
       reconstruction.set( u0 );
 
