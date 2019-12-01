@@ -8,7 +8,8 @@
 #define REGISTER_NUMERICAL_FLUX(token, FluxType, flux)                         \
     if (config["flux"] == (token)) {                                           \
         return std::make_shared<FVMRateOfChange<FluxType, Reconstruction>>(    \
-            grid, model, flux, reconstruction);                                       \
+            grid, model, flux, reconstruction,                                 \
+            config["reconstruction_variable"] == "primitive" ? true : false);  \
     }
 
 template <class Reconstruction>
@@ -35,7 +36,7 @@ deduce_numerical_flux(const nlohmann::json &config,
 #define REGISTER_RECONSTRUCTION(token, reconstruction)                         \
     if (config["reconstruction"] == token) {                                   \
         return deduce_numerical_flux(                                          \
-            config, grid, model, simulation_time, reconstruction);                     \
+            config, grid, model, simulation_time, reconstruction);             \
     }
 
 std::shared_ptr<RateOfChange> make_fvm_rate_of_change(

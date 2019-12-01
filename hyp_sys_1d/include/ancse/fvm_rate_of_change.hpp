@@ -24,11 +24,13 @@ class FVMRateOfChange : public RateOfChange {
     FVMRateOfChange(const Grid &grid,
                     const std::shared_ptr<Model> &model,
                     const NumericalFlux &numerical_flux,
-                    const Reconstruction &reconstruction)
+                    const Reconstruction &reconstruction,
+                    const bool reconstruct_in_prim)
         : grid(grid),
           model(model),
           numerical_flux(numerical_flux),
-          reconstruction(reconstruction) {}
+          reconstruction(reconstruction),
+          reconstruct_in_prim(reconstruct_in_prim) {}
 
     virtual void operator()(Eigen::MatrixXd &dudt,
                             const Eigen::MatrixXd &u0) const override {
@@ -39,10 +41,23 @@ class FVMRateOfChange : public RateOfChange {
       Eigen::VectorXd fL, fR = Eigen::VectorXd::Zero(n_vars);
       Eigen::VectorXd uL, uR;
 
-      reconstruction.set( u0 );
+      if (reconstruct_in_prim) {
+        Eigen::MatrixXd u0_prim(u0.rows(),u0.cols());
+        for (int i = 0; i < u0.cols(); i++) {
+          u0_prim.col(i) = model->cons_to_prim( u0.col(i) );
+        }
+        reconstruction.set( u0_prim );
+      } else {
+        reconstruction.set( u0 );
+      }
 
       for (int i = n_ghost-1; i < n_cells-n_ghost; i++) {
         std::tie(uL, uR) = reconstruction(i);
+
+        if (reconstruct_in_prim) {
+          uL = model->prim_to_cons(uL);
+          uR = model->prim_to_cons(uR);
+        }
 
         fL = fR;
         fR = numerical_flux(uL, uR);
@@ -56,6 +71,7 @@ class FVMRateOfChange : public RateOfChange {
     std::shared_ptr<Model> model;
     NumericalFlux numerical_flux;
     Reconstruction reconstruction;
+    bool reconstruct_in_prim;
 };
 
 std::shared_ptr<RateOfChange>
