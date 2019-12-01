@@ -139,11 +139,11 @@ class Roe {
 
         // Harten's entropy fix.
         const double eps = 1e-10;
-        for (int i=0; i<3; i++)
-            if ( L(i) > eps ) 
-                L(i) = std::abs(L(i));
-            else
-                L(i) = (std::abs(L(i)*L(i)) + eps*eps) / (2*eps); 
+        for (int i=0; i<3; i++) {
+            L(i) = std::abs( L(i) );
+            if ( L(i) <= eps )
+                L(i) = ( L(i)*L(i) + eps*eps ) / (2*eps);
+        }
 
         x = R * ( L.array() * x.array() ).matrix();
 
