@@ -14,8 +14,8 @@ TEST(TestLegendre, Example) {
 	for (int j=0; j<xis.cols(); j++) {
 		const double xi = xis(j);
 		L0 << 1.0;
-		L1 << 1.0, 2*xi-1;
-		L2 << 1.0, 2*xi-1, 6*xi*xi-6*xi+1;
+		L1 << 1.0, sqrt(3)*(2*xi-1);
+		L2 << 1.0, sqrt(3)*(2*xi-1), sqrt(5)*(6*xi*xi-6*xi+1);
 		ASSERT_EQ( B0(xi), scal*L0 );
 		ASSERT_EQ( B1(xi), scal*L1 );
 		ASSERT_EQ( B2(xi), scal*L2 );
@@ -32,8 +32,8 @@ TEST(TestLegendreDeriv, Example) {
 	for (int j=0; j<xis.cols(); j++) {
 		const double xi = xis(j);
 		L0 << 0.0;
-		L1 << 0.0, 2.0;
-		L2 << 0.0, 2.0, 12*xi-6;
+		L1 << 0.0, sqrt(3)*2.0;
+		L2 << 0.0, sqrt(3)*2.0, sqrt(5)*(12*xi-6);
 		ASSERT_EQ( B0.deriv(xi), scal*L0 );
 		ASSERT_EQ( B1.deriv(xi), scal*L1 );
 		ASSERT_EQ( B2.deriv(xi), scal*L2 );
