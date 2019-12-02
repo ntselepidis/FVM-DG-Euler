@@ -28,13 +28,26 @@ void check_cfl_condition(const CFLCondition &cfl_condition,
     ASSERT_DOUBLE_EQ(dt_cfl_approx, dt_cfl_exact);
 }
 
-TEST(CFLCondition, Example) {
+TEST(FVM_CFLCondition, Example) {
     auto n_ghost = 2;
     auto n_cells = 10 + 2 * n_ghost;
     auto grid = Grid({0.9, 1.0}, n_cells, n_ghost);
     std::shared_ptr<Model> model = std::make_shared<Burgers>();
     double cfl_number = 0.5;
 
-    auto cfl_condition = StandardCFLCondition(grid, model, cfl_number);
+    auto cfl_condition = FVM_CFLCondition(grid, model, cfl_number);
+    check_cfl_condition(cfl_condition, grid, model, cfl_number);
+}
+
+TEST(DGM_CFLCondition, Example) {
+    auto n_ghost = 2;
+    auto n_cells = 10 + 2 * n_ghost;
+    auto grid = Grid({0.9, 1.0}, n_cells, n_ghost);
+    std::shared_ptr<Model> model = std::make_shared<Burgers>();
+    double cfl_number = 0.5;
+    PolynomialBasis basis(2);
+    DGHandler dg_handler(model, basis);
+
+    auto cfl_condition = DGM_CFLCondition(grid, model, dg_handler, cfl_number);
     check_cfl_condition(cfl_condition, grid, model, cfl_number);
 }
