@@ -9,7 +9,7 @@
     if (config["flux"] == (token)) {                                           \
         return std::make_shared<FVMRateOfChange<FluxType, Reconstruction>>(    \
             grid, model, flux, reconstruction,                                 \
-            config["reconstruction_variable"] == "primitive" ? true : false);  \
+            config["reconstruction_variable"] == "primitive");                 \
     }
 
 template <class Reconstruction>
