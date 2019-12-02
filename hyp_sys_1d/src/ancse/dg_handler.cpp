@@ -7,8 +7,11 @@ Eigen::VectorXd DGHandler
 :: build_sol(const Eigen::VectorXd& u,
              const Eigen::VectorXd& basis) const
 {
-    Eigen::VectorXd uSol = Eigen::VectorXd::Zero(n_vars);
+    Eigen::VectorXd uSol(n_vars);
 
+    for (int i = 0; i < n_vars; i++) {
+        uSol(i) = u.segment(i*n_coeff, n_coeff).dot(basis);
+    }
 
     return uSol;
 }
@@ -20,6 +23,7 @@ Eigen::VectorXd DGHandler
 {
     Eigen::VectorXd uSol(n_vars);
 
+    uSol = build_sol(u, poly_basis(xi));
 
     return uSol;
 }
@@ -31,6 +35,12 @@ Eigen::MatrixXd DGHandler
     auto n_cells = u.cols();
     Eigen::MatrixXd u0 (n_vars, n_cells);
 
+    // Cell avg is equal to first coefficient of each component
+    for (int j = 0; j < n_cells; j++) {
+        for (int i = 0; i < n_vars; i++) {
+            u0(i,j) = u(i*n_coeff,j);
+        }
+    }
 
     return u0;
 }
