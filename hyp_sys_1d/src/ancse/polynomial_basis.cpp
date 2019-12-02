@@ -10,7 +10,7 @@ Eigen::VectorXd PolynomialBasis :: operator() (double xi) const
 	for (int i = 0; i < p+1; i++)
 		poly(i) = std::legendre(i,2*xi-1); // shifted Legendre
 
-    return poly;
+    return scaling_factor*poly;
 }
 
 /// Computes the derivative of Legendre polynomial basis
@@ -23,9 +23,8 @@ Eigen::VectorXd PolynomialBasis :: deriv (double xi) const
 
 	if ( p > 0 ) dpoly(1) = 2.0;
 	if ( p > 1 ) dpoly(2) = 12*xi - 6;
-	if ( p > 2 ) dpoly(3) = 60*xi*xi - 60*xi + 12;
-	if ( p > 3 ) throw std::runtime_error(
-		"Usupported Legendre polynomial order.");
+	if ( p > 2 ) throw std::runtime_error(
+		"Usupported (>2) Legendre polynomial degree.");
 
-    return dpoly;
+    return scaling_factor*dpoly;
 }
