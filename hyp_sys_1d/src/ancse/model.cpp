@@ -69,7 +69,7 @@ double Euler::max_eigenvalue(const Eigen::VectorXd &u) const
 Eigen::VectorXd Euler::cons_to_prim(const Eigen::VectorXd &u_cons) const
 {
     const double rho  = u_cons(0); // density
-    const double rhov = u_cons(1); // mass
+    const double rhov = u_cons(1); // momentum
     const double   E  = u_cons(2); // energy
     const double   v  = rhov / rho;
     const double   p  = (E-0.5*rhov*v)*(gamma-1);
