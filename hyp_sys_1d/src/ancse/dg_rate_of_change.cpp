@@ -14,7 +14,41 @@ void DGRateOfChange<NumericalFlux>
 :: eval_numerical_flux (Eigen::MatrixXd &dudt,
                         const Eigen::MatrixXd &u0) const
 {
-    // implement the loop for DG numerical flux term.
+    // Implements the loop for DG numerical flux term.
+    // Input:
+    //   - u0: ( m x (p+1) ) x N
+    // Output:
+    //   - dudt ( initialized ): ( m x (p+1) ) x N
+    // Note:
+    //   - ( m x (p+1) ) x N => ( n_vars x n_coeff ) x n_cells
+
+    // Helpers
+    const int n_coeff = 1 + poly_basis.get_degree();
+    const int n_cells = grid.n_cells;
+    const int n_ghost = grid.n_ghost;
+    const int n_vars = model->get_nvars();
+
+    const Eigen::VectorXd phiL = poly_basis( 1.0 );
+    const Eigen::VectorXd phiR = poly_basis( 0.0 );
+    Eigen::VectorXd uL, uR;
+    Eigen::VectorXd fL, fR = Eigen::VectorXd::Zero(n_vars);
+
+    for (int j = n_ghost-1; j < n_cells-n_ghost; j++)
+    {
+        // trace values
+        uL = dg_handler.build_sol( u0.col( j ), 1.0 );
+        uR = dg_handler.build_sol( u0.col(j+1), 0.0 );
+
+        // fluxes
+        fL = fR;
+        fR = numerical_flux(uL, uR);
+
+        for (int i = 0; i < n_vars; i++)
+        {
+            dudt.col(j).segment(i*n_coeff, n_coeff)
+                     = fL(i)*phiL - fR(i)*phiR;
+        }
+    }
 }
 
 /// DG volume integral term
@@ -46,7 +80,7 @@ void DGRateOfChange<NumericalFlux>
     }
 
     // Loop over all cells (except for ghosts)
-    for (int j = n_ghost-1; j < n_cells-n_ghost; j++)
+    for (int j = n_ghost; j < n_cells-n_ghost; j++)
     {
         // Loop over all quadrature points
         for (int k = 0; k < n_quad_points; k++)
@@ -84,7 +118,14 @@ std::shared_ptr<RateOfChange> make_dg_rate_of_change(
     const DGHandler &dg_handler,
     const std::shared_ptr<SimulationTime> &simulation_time)
 {
-    // Register the other numerical fluxes.
+    // Register the numerical fluxes.
+    REGISTER_NUMERICAL_FLUX("central_flux", CentralFlux, CentralFlux(model))
+    REGISTER_NUMERICAL_FLUX("rusanov", Rusanov, Rusanov(model))
+    REGISTER_NUMERICAL_FLUX("lax_friedrichs",
+        LaxFriedrichs, LaxFriedrichs(grid, model, simulation_time))
+    REGISTER_NUMERICAL_FLUX("roe", Roe, Roe(model))
+    REGISTER_NUMERICAL_FLUX("hll", HLL, HLL(model))
+    REGISTER_NUMERICAL_FLUX("hllc", HLLC, HLLC(model))
 
     throw std::runtime_error(
         fmt::format("Unknown numerical flux. {}",

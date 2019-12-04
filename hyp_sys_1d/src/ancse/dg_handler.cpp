@@ -42,7 +42,9 @@ Eigen::MatrixXd DGHandler
         }
     }
 
-    return u0;
+    const double scal = poly_basis(0.0)(0);
+
+    return scal*u0;
 }
 
 /// build split solution uSol_m = u0 + um, uSol_p = u0 - up
