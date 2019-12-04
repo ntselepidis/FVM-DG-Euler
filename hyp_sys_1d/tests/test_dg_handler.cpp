@@ -13,7 +13,8 @@ TEST(TestDGHandler, Example) {
 	const int deg = 2;
 	const int n_coeff = deg + 1;
 	
-	PolynomialBasis basis(deg);
+	const double scal = 1.0 / sqrt(1e-2);
+	PolynomialBasis basis(deg, scal);
 
 	DGHandler dg_handler( model_euler, basis );
 
@@ -29,7 +30,7 @@ TEST(TestDGHandler, Example) {
 	
 	for (int j = 0; j < n_cells; j++) {
 		for (int i = 0; i < n_vars; i++) {
-			u_avg_target(i,j) = (j*u.rows() + i) + 2*i;
+			u_avg_target(i,j) = scal * ((j*u.rows() + i) + 2*i);
 		}
 	}
 
