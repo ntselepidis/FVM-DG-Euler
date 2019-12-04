@@ -30,7 +30,8 @@ DGM_CFLCondition::DGM_CFLCondition(const Grid &grid,
 
 double DGM_CFLCondition::operator()(const Eigen::MatrixXd &u) const {
 
-    auto u_avg = dg_handler.build_cell_avg( u ); // Extract 0-th order coeffs 
+    // Extract scaled 0-th order coeffs
+    auto u_avg = dg_handler.build_cell_avg( u );
 
     auto n_cells = grid.n_cells;
     auto n_ghost = grid.n_ghost;

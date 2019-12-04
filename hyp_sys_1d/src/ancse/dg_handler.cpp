@@ -35,13 +35,14 @@ Eigen::MatrixXd DGHandler
     auto n_cells = u.cols();
     Eigen::MatrixXd u0 (n_vars, n_cells);
 
-    // Cell avg is equal to first coefficient of each component
+    // Cell avg is eq to 0-th ord coeffs of each component (scaled)
     for (int j = 0; j < n_cells; j++) {
         for (int i = 0; i < n_vars; i++) {
             u0(i,j) = u(i*n_coeff,j);
         }
     }
 
+    // scaling factor ( 1.0 / sqrt(h) )
     const double scal = poly_basis(0.0)(0);
 
     return scal*u0;

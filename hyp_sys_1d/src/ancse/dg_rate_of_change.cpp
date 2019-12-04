@@ -35,18 +35,18 @@ void DGRateOfChange<NumericalFlux>
 
     for (int j = n_ghost-1; j < n_cells-n_ghost; j++)
     {
-        // trace values
+        // Trace values at -+(j+1/2)
         uL = dg_handler.build_sol( u0.col( j ), 1.0 );
         uR = dg_handler.build_sol( u0.col(j+1), 0.0 );
 
-        // fluxes
-        fL = fR;
-        fR = numerical_flux(uL, uR);
+        // Fluxes at (j-1/2) and (j+1/2)
+        fL = fR; // Reuse from previous iteration flux at (j-1/2)
+        fR = numerical_flux(uL, uR); //   Compute flux at (j+1/2)
 
         for (int i = 0; i < n_vars; i++)
         {
             dudt.col(j).segment(i*n_coeff, n_coeff)
-                     = fL(i)*phiL - fR(i)*phiR;
+                    += fL(i)*phiL - fR(i)*phiR;
         }
     }
 }
