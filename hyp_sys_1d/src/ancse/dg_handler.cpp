@@ -60,9 +60,22 @@ DGHandler :: build_split_sol(const Eigen::MatrixXd& u) const
     }
     
     auto u0 = build_cell_avg(u);
-    Eigen::MatrixXd um = Eigen::MatrixXd::Zero (n_vars, n_cells);
-    Eigen::MatrixXd up = Eigen::MatrixXd::Zero (n_vars, n_cells);
+    Eigen::MatrixXd um(n_vars, n_cells);
+    Eigen::MatrixXd up(n_vars, n_cells);
+    auto phim = poly_basis(1.0);
+    auto phip = poly_basis(0.0);
 
+    for (int j = 0; j < n_cells; j++)
+    {
+        for (int i = 0; i < n_vars; i++)
+        {
+            um(i,j) = u.col(j).segment(i*n_coeff+1, n_coeff-1)
+                            .dot(phim.segment(1, n_coeff-1));
+
+            up(i,j) =-u.col(j).segment(i*n_coeff+1, n_coeff-1)
+                            .dot(phip.segment(1, n_coeff-1));
+        }
+    }
 
     return {std::move(u0), std::move(um), std::move(up)};
 }
@@ -80,4 +93,7 @@ void DGHandler :: compute_limit_coeffs (Eigen::MatrixXd &u,
             "Limiter not implemented for higher than 3rd order");
     }
     
+
+
+
 }
