@@ -62,8 +62,8 @@ DGHandler :: build_split_sol(const Eigen::MatrixXd& u) const
     auto u0 = build_cell_avg(u);
     Eigen::MatrixXd um(n_vars, n_cells);
     Eigen::MatrixXd up(n_vars, n_cells);
-    auto phim = poly_basis(1.0);
-    auto phip = poly_basis(0.0);
+    const auto phim = poly_basis(1.0);
+    const auto phip = poly_basis(0.0);
 
     for (int j = 0; j < n_cells; j++)
     {
@@ -93,7 +93,43 @@ void DGHandler :: compute_limit_coeffs (Eigen::MatrixXd &u,
             "Limiter not implemented for higher than 3rd order");
     }
     
+    const auto n_cells = um.cols();
+    const auto phim = poly_basis(1.0); // x_(i+1/2)-
+    const auto phip = poly_basis(0.0); // x_(i-1/2)+
+    const auto scaling_factor = phim(0);
 
+    Eigen::MatrixXd U(n_vars*n_coeff, n_cells); // Uijl coeffs
 
+    if ( n_coeff == 3 ) {
+        Eigen::Matrix2d A, invA;
+        Eigen::Vector2d b;
 
+        A << phim(1), phim(2),
+             phip(1), phip(2);
+
+        invA = A.inverse();
+
+        for (int j = 0; j < n_cells; j++) {
+            for (int i = 0; i < n_vars; i++) {
+                // extract 0th order coeff
+                U(i*n_coeff,j) = u(i,j) / scaling_factor;
+
+                // assemble rhs for linear system
+                b << um(i,j), -up(i,j);
+
+                // compute 1st and 2nd order coeffs
+                U.col(j).segment(i*n_coeff+1, n_coeff-1)
+                        = invA * b;
+            }
+        }
+    } else { /* if ( n_coeff == 2 ) */
+        for (int j = 0; j < n_cells; j++) {
+            for (int i = 0; i < n_vars; i++) {
+                U(i*n_coeff,  j) = u (i,j) / scaling_factor;
+                U(i*n_coeff+1,j) = um(i,j) / phim(1);
+            }
+        }
+    }
+
+    // return U;
 }
