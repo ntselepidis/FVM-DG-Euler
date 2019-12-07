@@ -70,6 +70,23 @@ double maxEigenValue(const EulerState &leftState,
     return std::max(leftEigenValue, rightEigenValue);
 }
 
+//! Computes the minimum eigen value
+double minEigenValue(const EulerState &u) {
+
+    double rho = u[0];
+    double v = std::sqrt(u[1] * u[1] + u[2] * u[2]) / rho;
+    return v - speedOfSound(u);
+}
+
+double minEigenValue(const EulerState &leftState,
+                     const EulerState &rightState) {
+
+    auto leftEigenValue = minEigenValue(leftState);
+    auto rightEigenValue = minEigenValue(rightState);
+
+    return std::min(leftEigenValue, rightEigenValue);
+}
+
 //! Check that all components of u are real-valued, e.g. not inf or nan.
 bool isReal(const EulerState &u) {
     return std::isfinite(u[0]) || std::isfinite(u[1]) || std::isfinite(u[2])
