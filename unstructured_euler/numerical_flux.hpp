@@ -75,7 +75,7 @@ class FluxRateOfChange {
                                   int k,
                                   const Mesh &mesh) const {
         // Implement the outflow flux boundary condition.
-        return EulerState{};
+        return mesh.getEdgeLength(i, k) * euler::flux(U.row(i));
     }
 
     /// Compute the reflective boundary flux through the k-th edge of cell i.
@@ -85,9 +85,14 @@ class FluxRateOfChange {
                                      int i,
                                      int k,
                                      const Mesh &mesh) const {
-
         // Implement the reflective flux boundary condition.
-        return EulerState{};
+        const auto normal = mesh.getUnitNormal(i, k);
+        EulerState U_     = U.row(i);
+        EulerState U_star = euler::localCoordinates(U_, normal);
+        U_star(1) *= -1.0;
+        U_star = euler::globalCoordinates(U_star, normal);
+
+        return hllc(U_, U_star);
     }
 
     /// Compute the flux through the k-th interface of cell i.
