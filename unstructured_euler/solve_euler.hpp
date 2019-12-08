@@ -75,7 +75,7 @@ void print_progress(
 
     std::cout << fmt::format("\r"
                              "n_steps = {: 3d}, t = {:.3e}, dt = {:.2e}, "
-                             "elased = {:6.1f}s, eta = {:6.1f}s",
+                             "elapsed = {:6.1f}s, eta = {:6.1f}s",
                              n_steps,
                              t,
                              dt,
