@@ -36,7 +36,7 @@ class FluxRateOfChange {
             assert_valid_flux(mesh, i, k, f);
             dudt.row(i) += f;
           }
-
+          dudt.row(i) /= -mesh.getTriangleArea(i);
         }
     }
 

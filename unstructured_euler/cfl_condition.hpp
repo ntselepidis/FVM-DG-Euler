@@ -13,7 +13,7 @@ class CFLCondition {
 
         double a_max = 0.0;
         for (int i = 0; i < U.rows(); i++) {
-            a_max = std::max( a_max, euler::maxEigenValue( U.row(i) ) ); // TODO: Check implicit conversion from row vector to col vector (i.e. EulerState)
+            a_max = std::max( a_max, euler::maxEigenValue( U.row(i) ) );
         }
 
         double dt = cfl_number * dx / a_max;
