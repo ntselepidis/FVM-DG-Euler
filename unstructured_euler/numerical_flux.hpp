@@ -106,7 +106,10 @@ class FluxRateOfChange {
         // Reconstruct the trace values of U and compute
         // the numerical flux through the k-th interface of
         // cell i.
-        return EulerState{};
+        const int j = mesh.getNeighbour(i, k);
+        const EulerState uL = U.row(i);
+        const EulerState uR = U.row(j);
+        return hllc(uL, uR);
     }
 
 
