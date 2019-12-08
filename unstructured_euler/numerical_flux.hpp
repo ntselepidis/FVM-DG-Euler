@@ -13,7 +13,7 @@
 //       as needed.
 class FluxRateOfChange {
   public:
-    explicit FluxRateOfChange(int n_cells) {
+    explicit FluxRateOfChange(int n_cells) : n_cells(n_cells) {
         // Allocate buffers as needed.
     }
 
@@ -28,6 +28,16 @@ class FluxRateOfChange {
         // Note: You can use `assert_valid_flux` to check
         // if what `computeFlux` returns makes any sense.
         // Note: Do not assume `dudt` is filled with zeros.
+        dudt.setZero();
+        #pragma omp parallel for
+        for (int i = 0; i < n_cells; i++) {
+          for (int k = 0; k < 3; k++) {
+            const auto f = computeFlux(u, i, k, mesh);
+            assert_valid_flux(mesh, i, k, f);
+            dudt.row(i) += f;
+          }
+
+        }
     }
 
     void assert_valid_flux(const Mesh &mesh,
@@ -115,4 +125,5 @@ class FluxRateOfChange {
 
   private:
     // add any member variables you might need here.
+    int n_cells;
 };
