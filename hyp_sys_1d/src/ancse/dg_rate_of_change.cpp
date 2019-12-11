@@ -46,7 +46,7 @@ void DGRateOfChange<NumericalFlux>
         for (int i = 0; i < n_vars; i++)
         {
             dudt.col(j).segment(i*n_coeff, n_coeff)
-                    += fL(i)*phiL - fR(i)*phiR;
+                    += fL(i)*phiR - fR(i)*phiL;
         }
     }
 }

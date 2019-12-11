@@ -1,3 +1,5 @@
 hyp_sys_1d/build*
 hyp_sys_1d/results
+hyp_sys_1d/tags
 unstructured_euler/build*
+unstructured_euler/tags
