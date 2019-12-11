@@ -49,7 +49,7 @@ Eigen::MatrixXd Euler::eigenvectors(const Eigen::VectorXd &u) const
     const double   p = u_prim(2);
     const double   E = u(2);
     const double   H = (E+p)/rho;
-    const double   c = std::sqrt( gamma*p ) / rho;
+    const double   c = std::sqrt( gamma*p / rho );
 
     Eigen::MatrixXd eigvecs(3,3);
 

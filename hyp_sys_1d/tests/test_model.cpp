@@ -61,7 +61,7 @@ TEST(TestEulerEigenvalues, Example) {
 	const double rho = 1.0;
 	const double   v = -2.0;
 	const double   p = 1.0;
-	const double   c = std::sqrt( gamma*p ) / rho;
+	const double   c = std::sqrt( gamma*p / rho );
 
 	Eigen::VectorXd u_prim(3);
 	u_prim << rho, v, p;
@@ -87,7 +87,7 @@ TEST(TestEulerEigenvectors, Example) {
 	const double rho = 1.0;
 	const double   v = -2.0;
 	const double   p = 1.0;
-	const double   c = std::sqrt( gamma*p ) / rho;
+	const double   c = std::sqrt( gamma*p / rho );
 
 	Eigen::VectorXd u_prim(3);
 	u_prim << rho, v, p;
@@ -118,7 +118,7 @@ TEST(TestEulerMaxEigenvalue, Example) {
 	const double rho = 1.0;
 	const double   v = -2.0;
 	const double   p = 1.0;
-	const double   c = std::sqrt( gamma*p ) / rho;
+	const double   c = std::sqrt( gamma*p / rho );
 
 	Eigen::VectorXd u_prim(3);
 	u_prim << rho, v, p;
