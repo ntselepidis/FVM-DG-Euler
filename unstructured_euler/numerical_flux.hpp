@@ -13,7 +13,7 @@
 //       as needed.
 class FluxRateOfChange {
   public:
-    explicit FluxRateOfChange(int n_cells) : n_cells(n_cells) {
+    explicit FluxRateOfChange(int n_cells) {
         // Allocate buffers as needed.
     }
 
@@ -27,16 +27,18 @@ class FluxRateOfChange {
         // given interface.
         // Note: You can use `assert_valid_flux` to check
         // if what `computeFlux` returns makes any sense.
-        // Note: Do not assume `dudt` is filled with zeros.
+        // Note: Do not assume `dudt` is filled with zeros. 
         dudt.setZero();
+        int n_cells = mesh.getNumberOfTriangles();
         #pragma omp parallel for
         for (int i = 0; i < n_cells; i++) {
-          for (int k = 0; k < 3; k++) {
-            const auto f = computeFlux(u, i, k, mesh);
-            assert_valid_flux(mesh, i, k, f);
-            dudt.row(i) += f;
-          }
-          dudt.row(i) /= -mesh.getTriangleArea(i);
+            const double area = mesh.getTriangleArea(i);
+            for (int k = 0; k < 3; k++) {
+                const double edge_length = mesh.getEdgeLength(i, k);
+                const auto nF = computeFlux(u, i, k, mesh);
+                assert_valid_flux(mesh, i, k, nF);
+                dudt.row(i) -= nF * edge_length / area;
+            }
         }
     }
 
@@ -85,7 +87,9 @@ class FluxRateOfChange {
                                   int k,
                                   const Mesh &mesh) const {
         // Implement the outflow flux boundary condition.
-        return mesh.getEdgeLength(i, k) * euler::flux(U.row(i));
+        const auto normal = mesh.getUnitNormal(i, k);
+        const auto f = euler::flux(euler::localCoordinates(U.row(i), normal));
+        return euler::globalCoordinates(f, normal);
     }
 
     /// Compute the reflective boundary flux through the k-th edge of cell i.
@@ -97,12 +101,15 @@ class FluxRateOfChange {
                                      const Mesh &mesh) const {
         // Implement the reflective flux boundary condition.
         const auto normal = mesh.getUnitNormal(i, k);
-        EulerState U_     = U.row(i);
-        EulerState U_star = euler::localCoordinates(U_, normal);
-        U_star(1) *= -1.0;
-        U_star = euler::globalCoordinates(U_star, normal);
+        const auto uL = euler::localCoordinates(U.row(i), normal);
+        
+        EulerState uR = uL;
+        
+        // Flip the momentum of the normal component.
+        uR[1] = -uR[1];
 
-        return hllc(U_, U_star);
+        const auto nF = hllc(uL, uR);
+        return euler::globalCoordinates(nF, normal);
     }
 
     /// Compute the flux through the k-th interface of cell i.
@@ -117,13 +124,18 @@ class FluxRateOfChange {
         // the numerical flux through the k-th interface of
         // cell i.
         const int j = mesh.getNeighbour(i, k);
+        const auto normal = mesh.getUnitNormal(i, k);
+
         const EulerState uL = U.row(i);
         const EulerState uR = U.row(j);
-        return hllc(uL, uR);
+
+        const auto nF = hllc(euler::localCoordinates(uL, normal), 
+                             euler::localCoordinates(uR, normal));
+
+        return euler::globalCoordinates(nF, normal);
     }
 
 
   private:
     // add any member variables you might need here.
-    int n_cells;
 };
