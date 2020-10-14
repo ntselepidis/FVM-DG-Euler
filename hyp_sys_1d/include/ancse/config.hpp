@@ -7,6 +7,6 @@
 // Note: this is easily misused as essentially a global variable.
 nlohmann::json get_global_config();
 
-nlohmann::json get_config(const std::string& fileName);
+nlohmann::json get_config(const std::string &fileName);
 
 #endif // HYPSYS1D_CONFIG_HPP

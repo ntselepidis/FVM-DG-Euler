@@ -7,10 +7,10 @@ SimulationTime::SimulationTime(double t, double dt, double t_end, int k)
     : t(t), dt(dt), t_end(t_end), k(k) {}
 
 void SimulationTime::advance() {
-    t = t + dt;
-    k += 1;
+  t = t + dt;
+  k += 1;
 }
 bool is_finished(const SimulationTime &simulation_time) {
-    return simulation_time.t
-           > simulation_time.t_end - 1e-12 * simulation_time.t_end;
+  return simulation_time.t >
+         simulation_time.t_end - 1e-12 * simulation_time.t_end;
 }

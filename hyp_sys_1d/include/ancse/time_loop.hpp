@@ -12,27 +12,27 @@
 
 /// Advances the solution of the PDE iteratively until the final time.
 class TimeLoop {
-  public:
-    TimeLoop(std::shared_ptr<SimulationTime> simulation_time,
-             std::shared_ptr<TimeIntegrator> time_integrator,
-             std::shared_ptr<CFLCondition> cfl_condition,
-             std::shared_ptr<SnapshotWriter> snapshot_writer)
-        : simulation_time(std::move(simulation_time)),
-          time_integrator(std::move(time_integrator)),
-          cfl_condition(std::move(cfl_condition)),
-          snapshot_writer(std::move(snapshot_writer)) {}
+public:
+  TimeLoop(std::shared_ptr<SimulationTime> simulation_time,
+           std::shared_ptr<TimeIntegrator> time_integrator,
+           std::shared_ptr<CFLCondition> cfl_condition,
+           std::shared_ptr<SnapshotWriter> snapshot_writer)
+      : simulation_time(std::move(simulation_time)),
+        time_integrator(std::move(time_integrator)),
+        cfl_condition(std::move(cfl_condition)),
+        snapshot_writer(std::move(snapshot_writer)) {}
 
-    virtual ~TimeLoop() {}
+  virtual ~TimeLoop() {}
 
-    virtual void operator()(Eigen::MatrixXd u0) const;
+  virtual void operator()(Eigen::MatrixXd u0) const;
 
-    void write_snapshot(const Eigen::MatrixXd &u) const;
+  void write_snapshot(const Eigen::MatrixXd &u) const;
 
-  protected:
-    mutable std::shared_ptr<SimulationTime> simulation_time;
-    std::shared_ptr<TimeIntegrator> time_integrator;
-    std::shared_ptr<CFLCondition> cfl_condition;
-    std::shared_ptr<SnapshotWriter> snapshot_writer;
+protected:
+  mutable std::shared_ptr<SimulationTime> simulation_time;
+  std::shared_ptr<TimeIntegrator> time_integrator;
+  std::shared_ptr<CFLCondition> cfl_condition;
+  std::shared_ptr<SnapshotWriter> snapshot_writer;
 };
 
 #endif // HYPSYS1D_TIME_LOOP_HPP

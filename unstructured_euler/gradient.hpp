@@ -12,10 +12,8 @@
  * @param       q_bar the cell-averages of `q`. Has shape (n_cells, 4).
  * @param       mesh
  */
-void compute_gradients(Eigen::MatrixXd &dqdx,
-                       Eigen::MatrixXd &dqdy,
-                       const Eigen::MatrixXd &q_bar,
-                       const Mesh &mesh) {
+void compute_gradients(Eigen::MatrixXd &dqdx, Eigen::MatrixXd &dqdy,
+                       const Eigen::MatrixXd &q_bar, const Mesh &mesh) {
 
-    // Compute the gradient of all 4 components of q_bar
+  // Compute the gradient of all 4 components of q_bar
 }

@@ -1,40 +1,40 @@
 #include <gtest/gtest.h>
 
 #include <Eigen/Dense>
-#include <iostream>
 #include <ancse/dg_handler.hpp>
+#include <iostream>
 
 TEST(TestDGHandler, Example) {
 
-	std::shared_ptr<Model> model_euler = std::make_shared<Euler>();
+  std::shared_ptr<Model> model_euler = std::make_shared<Euler>();
 
-	const int n_vars = model_euler->get_nvars();
-	const int n_cells = 10;
-	const int deg = 2;
-	const int n_coeff = deg + 1;
-	
-	const double scal = 1.0 / sqrt(1e-2);
-	PolynomialBasis basis(deg, scal);
+  const int n_vars = model_euler->get_nvars();
+  const int n_cells = 10;
+  const int deg = 2;
+  const int n_coeff = deg + 1;
 
-	DGHandler dg_handler( model_euler, basis );
+  const double scal = 1.0 / sqrt(1e-2);
+  PolynomialBasis basis(deg, scal);
 
-	Eigen::MatrixXd u(n_vars*n_coeff, n_cells);
+  DGHandler dg_handler(model_euler, basis);
 
-	for (int j = 0; j < u.cols(); j++) {
-		for (int i = 0; i < u.rows(); i++) {
-			u(i,j) = j*u.rows() + i;
-		}
-	}
+  Eigen::MatrixXd u(n_vars * n_coeff, n_cells);
 
-	Eigen::MatrixXd u_avg_target(n_vars, n_cells);
-	
-	for (int j = 0; j < n_cells; j++) {
-		for (int i = 0; i < n_vars; i++) {
-			u_avg_target(i,j) = scal * ((j*u.rows() + i) + 2*i);
-		}
-	}
+  for (int j = 0; j < u.cols(); j++) {
+    for (int i = 0; i < u.rows(); i++) {
+      u(i, j) = j * u.rows() + i;
+    }
+  }
 
-	auto u_avg = dg_handler.build_cell_avg(u);
+  Eigen::MatrixXd u_avg_target(n_vars, n_cells);
 
-	ASSERT_EQ( u_avg, u_avg_target );
+  for (int j = 0; j < n_cells; j++) {
+    for (int i = 0; i < n_vars; i++) {
+      u_avg_target(i, j) = scal * ((j * u.rows() + i) + 2 * i);
+    }
+  }
+
+  auto u_avg = dg_handler.build_cell_avg(u);
+
+  ASSERT_EQ(u_avg, u_avg_target);
 }
